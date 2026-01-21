@@ -22,6 +22,7 @@ dev = [
     "flake8>=7.3.0",
     "isort>=7.0.0",
     "mypy>=1.19.1",
+    "types-passlib>=1.7.7.20250602",
 ]
 
 [tool.black]
