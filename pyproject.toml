@@ -7,9 +7,10 @@ requires-python = ">=3.10"
 dependencies = [
     "alembic>=1.18.1",
     "asyncpg>=0.31.0",
+    "bcrypt==4.0.1",
     "fastapi>=0.128.0",
     "gunicorn>=23.0.0",
-    "passlib[bcrypt]>=1.7.4",
+    "passlib==1.7.4",
     "pydantic-settings>=2.12.0",
     "redis>=7.1.0",
     "sqlalchemy>=2.0.45",
@@ -31,6 +32,3 @@ test = [
 
 [tool.black]
 line-length = 79
-
-[tool.pytest.ini_options]
-pythonpath = "src"
