@@ -3,41 +3,36 @@ import uuid
 from typing_extensions import Self
 
 from core.entity import Entity
-from core.hasher import AbstractHasher
+from core.exceptions import EmptyStringError
+from core.service import AbstractHasher
 
 
 class User(Entity):
-    __slots__ = ("user_name", "email", "_password")
-
-    user_name: str
-    email: str
-    _password: str
+    __slots__ = ("user_name", "email", "password")
 
     def __init__(
         self,
         user_name: str,
         email: str,
-        hashed_password: str,
+        hashed_password: str | None = None,
         id: uuid.UUID | None = None,
     ) -> None:
         super().__init__(id)
-        self.user_name = user_name
-        self.email = email
-        self._password = hashed_password
-
-    @property
-    def password(self) -> str:
-        return self._password
+        self.user_name: str = user_name
+        self.email: str = email
+        self.password: str | None = hashed_password
 
     @classmethod
     def create(
         cls,
         user_name: str,
         email: str,
-        raw_password: str,
+        password: str,
         hasher: AbstractHasher,
     ) -> Self:
-        hashed_password = hasher.hash(raw_password)
+        if not password:
+            raise EmptyStringError("Password string can't be empty")
+        hashed_password = hasher.hash(password)
         return cls(
             user_name=user_name, email=email, hashed_password=hashed_password
         )
@@ -56,12 +51,3 @@ class User(Entity):
             email=email,
             hashed_password=hashed_password,
         )
-
-    def set_password(self, raw_password: str, hasher: AbstractHasher) -> Self:
-        self._password = hasher.hash(raw_password)
-        return self
-
-    def compare_password(
-        self, raw_password: str, hasher: AbstractHasher
-    ) -> bool:
-        return hasher.compare(raw_password, self._password)
