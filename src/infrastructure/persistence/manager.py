@@ -26,4 +26,5 @@ class DBManager:
             )
         )
 
+
 manager = DBManager(env)
