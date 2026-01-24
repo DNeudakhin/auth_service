@@ -18,7 +18,7 @@ def fake_hasher(faker: Faker) -> FakeHasher:
     return FakeHasher(faker.password())
 
 
-def test_user_register_service(
+async def test_user_register_service(
     fake_repo: FakerUserRepository, fake_hasher: FakeHasher, faker: Faker
 ):
     command = RegisterUserComand(
@@ -29,9 +29,9 @@ def test_user_register_service(
 
     serivce = UserRegisterService(repo=fake_repo, hasher=fake_hasher)
 
-    id = serivce.execute(command)
+    id = await serivce.execute(command)
 
-    entity = fake_repo.get_user_by_email(command.email)
+    entity = await fake_repo.get_user_by_email(command.email)
 
     assert isinstance(entity, User) and entity is not None
     assert entity.id == id

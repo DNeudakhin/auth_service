@@ -15,7 +15,7 @@ class UserRegisterService:
         self._repo: AbstractUserRepository = repo
         self._hasher: AbstractHasher = hasher
 
-    def execute(self, command: RegisterUserComand) -> uuid.UUID:
+    async def execute(self, command: RegisterUserComand) -> uuid.UUID:
         user = User.create(
             user_name=command.user_name,
             email=command.email,
@@ -23,4 +23,4 @@ class UserRegisterService:
             hasher=self._hasher,
         )
 
-        return self._repo.create_user(user)
+        return await self._repo.create_user(user)
