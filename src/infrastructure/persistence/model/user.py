@@ -4,7 +4,7 @@ from sqlalchemy import String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
-from infrastructure.persistence.models import BaseModel
+from infrastructure.persistence.model import BaseModel
 
 
 class User(BaseModel):
@@ -15,4 +15,4 @@ class User(BaseModel):
     email: Mapped[str] = mapped_column(
         String(255), nullable=False, unique=True
     )
-    hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
+    password: Mapped[str] = mapped_column(String(255), nullable=False)
