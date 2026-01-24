@@ -6,7 +6,7 @@ from domain import entity
 from domain.repository import AbstractUserRepository
 from infrastructure.persistence import model
 from infrastructure.persistence.manager import DBManager, manager
-from infrastructure.persistence.mapper.user import UserMapper
+from infrastructure.persistence.mapper import UserMapper
 
 
 class SqlAlchemyUserRepository(AbstractUserRepository):
