@@ -18,7 +18,7 @@ class FakerUserRepository(AbstractUserRepository):
     def __init__(self) -> None:
         self._storage: dict[str, User] = {}
 
-    def get_user_get_user_by_email(self, email: str) -> User | None:
+    def get_user_by_email(self, email: str) -> User | None:
         return self._storage.get(email)
 
     def create_user(self, entity: User) -> uuid.UUID:
