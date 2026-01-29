@@ -1,6 +1,6 @@
 import uuid
 
-from application import dtos, interfaces
+from application import dto, interface
 from domain.entity import User
 
 
@@ -8,12 +8,12 @@ class UserRegisterService:
     __slots__ = ("_repo", "_hasher")
 
     def __init__(
-        self, repo: interfaces.UserRepository, hasher: interfaces.Hasher
+        self, repo: interface.UserRepository, hasher: interface.Hasher
     ) -> None:
-        self._repo: interfaces.UserRepository = repo
-        self._hasher: interfaces.Hasher = hasher
+        self._repo: interface.UserRepository = repo
+        self._hasher: interface.Hasher = hasher
 
-    async def execute(self, data: dtos.RegisterUser) -> uuid.UUID:
+    async def execute(self, data: dto.RegisterUser) -> uuid.UUID:
         hashed_password = self._hasher.hash(data.password)
 
         user = User(
