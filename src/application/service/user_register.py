@@ -1,26 +1,25 @@
 import uuid
 
-from application.dtos.commands.auth import RegisterUserComand
-from core.service import AbstractHasher
+from application import dtos, interfaces
 from domain.entity import User
-from domain.repository import AbstractUserRepository
 
 
 class UserRegisterService:
     __slots__ = ("_repo", "_hasher")
 
     def __init__(
-        self, repo: AbstractUserRepository, hasher: AbstractHasher
+        self, repo: interfaces.UserRepository, hasher: interfaces.Hasher
     ) -> None:
-        self._repo: AbstractUserRepository = repo
-        self._hasher: AbstractHasher = hasher
+        self._repo: interfaces.UserRepository = repo
+        self._hasher: interfaces.Hasher = hasher
 
-    async def execute(self, command: RegisterUserComand) -> uuid.UUID:
-        user = User.create(
-            user_name=command.user_name,
-            email=command.email,
-            password=command.password,
-            hasher=self._hasher,
+    async def execute(self, data: dtos.RegisterUser) -> uuid.UUID:
+        hashed_password = self._hasher.hash(data.password)
+
+        user = User(
+            user_name=data.user_name,
+            email=data.email,
+            hashed_password=hashed_password,
         )
 
         return await self._repo.create_user(user)
