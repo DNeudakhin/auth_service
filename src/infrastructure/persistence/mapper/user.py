@@ -5,7 +5,7 @@ from infrastructure.persistence import model
 class UserMapper:
     @staticmethod
     def to_domain(user: model.User) -> entity.User:
-        return entity.User.from_persistence_storage(
+        return entity.User(
             id=user.id,
             user_name=user.user_name,
             email=user.email,
