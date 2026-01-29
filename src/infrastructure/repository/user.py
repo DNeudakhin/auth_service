@@ -3,13 +3,12 @@ import uuid
 from sqlalchemy import select
 
 from domain import entity
-from domain.repository import AbstractUserRepository
 from infrastructure.persistence import model
 from infrastructure.persistence.manager import DBManager, manager
 from infrastructure.persistence.mapper import UserMapper
 
 
-class SqlAlchemyUserRepository(AbstractUserRepository):
+class SqlAlchemyUserRepository:
     __slots__ = "_manager"
 
     def __init__(self) -> None:
