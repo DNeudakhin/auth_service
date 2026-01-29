@@ -2,7 +2,7 @@ import pytest
 from faker import Faker
 from typing_extensions import Any
 
-from domain.service.passlib_hasher import PasslibHasher
+from utils.hasher.passlib_hasher import PasslibHasher
 
 faker = Faker()
 
@@ -41,7 +41,8 @@ def test_compare_hashing_string(string: str, passlib_hasher: PasslibHasher):
 
 @pytest.mark.parametrize("hashed_string", [faker.pystr()])
 @pytest.mark.parametrize(
-    "value", [faker.boolean(), faker.random_int(), faker.pyfloat(), [], ()]
+    "value",
+    [faker.boolean(), faker.random_int(), faker.pyfloat(), list(), tuple()],
 )
 def test_error_comapre_hashing_string(
     hashed_string, value: Any, passlib_hasher: PasslibHasher

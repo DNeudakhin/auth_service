@@ -1,9 +1,7 @@
 from passlib.context import CryptContext
 
-from core.service import AbstractHasher
 
-
-class PasslibHasher(AbstractHasher):
+class PasslibHasher:
     __slots__ = ("_secret_key", "_hasher")
 
     def __init__(self, secret_key: str) -> None:
