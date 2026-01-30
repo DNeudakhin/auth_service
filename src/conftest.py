@@ -38,7 +38,7 @@ def test_env(postgres_container: PostgresContainer) -> Settings:
         DB_PASSWORD=postgres_container.password,
     )
 
-@pytest_asyncio.fixture(scope="session")
+@pytest_asyncio.fixture
 async def db_manager(test_env: Settings) -> AsyncGenerator[DBManager]:
     manager = DBManager(test_env)
     yield manager
