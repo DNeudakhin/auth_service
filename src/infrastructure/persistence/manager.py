@@ -13,11 +13,7 @@ class DBManager:
 
     def __init__(self, settings: Settings) -> None:
         self.engine: AsyncEngine = create_async_engine(
-            (
-                f"postgresql+asyncpg://{settings.DB_USER}:"
-                f"{settings.DB_PASSWORD}@{settings.DB_HOST}:"
-                f"{settings.DB_PORT}/{settings.DB_NAME}"
-            ),
+            url=settings.DB_URL,
             echo=settings.DEBUG,
             pool_pre_ping=True,
             pool_recycle=300,

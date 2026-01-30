@@ -20,5 +20,13 @@ class Settings(BaseSettings):
     DB_PASSWORD: str = "postgres"
     DB_PORT: int = 5432
 
+    @property
+    def DB_URL(self):
+        return (
+            f"postgresql+asyncpg://{self.DB_USER}:"
+            f"{self.DB_PASSWORD}@{self.DB_HOST}:"
+            f"{self.DB_PORT}/{self.DB_NAME}"
+        )
+
 
 env = Settings()
