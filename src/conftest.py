@@ -3,8 +3,8 @@ import pytest_asyncio
 from testcontainers.postgres import PostgresContainer
 from typing_extensions import AsyncGenerator, Generator
 
-from config import env
 from config.settings import Settings
+from infrastructure.persistence import model
 from infrastructure.persistence.manager import DBManager
 
 HOST = "localhost"
@@ -28,7 +28,6 @@ def postgres_container() -> Generator[PostgresContainer]:
 
 @pytest.fixture(scope="session")
 def test_env(postgres_container: PostgresContainer) -> Settings:
-    env
     return Settings(
         DB_NAME=postgres_container.dbname,
         DB_HOST=HOST,
@@ -43,3 +42,14 @@ async def db_manager(test_env: Settings) -> AsyncGenerator[DBManager]:
     manager = DBManager(test_env)
     yield manager
     await manager.engine.dispose()
+
+
+@pytest_asyncio.fixture
+async def recreate_tables(db_manager: DBManager):
+    async with db_manager.engine.begin() as conn:
+        await conn.run_sync(model.BaseModel.metadata.create_all)
+
+    yield
+
+    async with db_manager.engine.begin() as conn:
+        await conn.run_sync(model.BaseModel.metadata.drop_all)
