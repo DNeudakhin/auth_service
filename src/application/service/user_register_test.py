@@ -1,40 +1,42 @@
+import uuid
+from unittest.mock import AsyncMock, Mock
+
 import pytest
 from faker import Faker
 
-from application.dtos.commands.auth import RegisterUserComand
-from application.service.user_register import UserRegisterService
-from core.service import FakeHasher
-from domain.entity import User
-from domain.repository.user import FakerUserRepository
+from application.dto import RegisterUser
+from application.service import UserRegisterService
+
+faker = Faker()
 
 
-@pytest.fixture(scope="function")
-def fake_repo() -> FakerUserRepository:
-    return FakerUserRepository()
-
-
-@pytest.fixture(scope="function")
-def fake_hasher(faker: Faker) -> FakeHasher:
-    return FakeHasher(faker.password())
-
-
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("user_name", "email", "password", "hashed_password"),
+    [(faker.user_name(), faker.email(), faker.password(), faker.password())],
+)
 async def test_user_register_service(
-    fake_repo: FakerUserRepository, fake_hasher: FakeHasher, faker: Faker
+    user_name: str, email: str, password: str, hashed_password: str
 ):
-    command = RegisterUserComand(
-        user_name=faker.user_name(),
-        email=faker.email(),
-        password=faker.password(),
+    hasher = Mock()
+    hasher.hash.return_value = hashed_password
+
+    repo = AsyncMock()
+    generated_id = uuid.uuid4()
+    repo.create_user.return_value = generated_id
+
+    data = RegisterUser(
+        user_name=user_name,
+        email=email,
+        password=password,
     )
 
-    serivce = UserRegisterService(repo=fake_repo, hasher=fake_hasher)
+    serivce = UserRegisterService(repo=repo, hasher=hasher)
 
-    id = await serivce.execute(command)
+    id = await serivce.register(data)
 
-    entity = await fake_repo.get_user_by_email(command.email)
+    assert isinstance(id, uuid.UUID)
+    assert generated_id == id
 
-    assert isinstance(entity, User) and entity is not None
-    assert entity.id == id
-    assert entity.email == command.email
-    assert entity.user_name == command.user_name
-    assert entity.password != command.password
+    repo.create_user.assert_awaited_once()
+    hasher.hash.assert_called_once_with(password)

@@ -13,7 +13,7 @@ class UserRegisterService:
         self._repo: interface.UserRepository = repo
         self._hasher: interface.Hasher = hasher
 
-    async def execute(self, data: dto.RegisterUser) -> uuid.UUID:
+    async def register(self, data: dto.RegisterUser) -> uuid.UUID:
         hashed_password = self._hasher.hash(data.password)
 
         user = User(
